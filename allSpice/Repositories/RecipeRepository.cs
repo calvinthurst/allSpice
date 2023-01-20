@@ -49,12 +49,37 @@ public class RecipeRepository
     ac.*
     FROM recipes re
     JOIN accounts ac ON ac.id = re.creatorId
-    WHERE re.creatorId = @id;
+    WHERE re.id = @id;
     ";
     return _db.Query<Recipe, Account, Recipe>(sql, (recipe, account) =>
     {
       recipe.creator = account;
       return recipe;
     }, new { id }).FirstOrDefault();
+
+  }
+
+  internal void Remove(int recipeId)
+  {
+    string sql = @"
+    DELETE FROM recipes
+    WHERE id = @recipeId;
+    ";
+    _db.Execute(sql, new { recipeId });
+  }
+
+  internal bool Update(Recipe original)
+  {
+    string sql = @"
+    UPDATE recipes
+    SET
+    title = @title,
+    instructions = @instructions,
+    img = @img,
+    category = @category
+    WHERE id = @id;
+    ";
+    int rows = _db.Execute(sql, original);
+    return rows > 0;
   }
 }

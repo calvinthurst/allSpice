@@ -27,8 +27,38 @@ public class RecipeService
     Recipe recipe = _repo.Get(id);
     if (recipe == null)
     {
-      throw new Exception("No Recipe at the id");
+      throw new Exception("No Recipe at that id");
     }
     return recipe;
+  }
+
+  internal Recipe Update(Recipe recipeUpdate, int recipeId, string userId)
+  {
+    Recipe original = Get(recipeId, userId);
+    if (original.creatorId != userId)
+    {
+      throw new Exception("Wait you didn't make this recipe");
+    }
+    original.title = recipeUpdate.title ?? original.title;
+    original.instructions = recipeUpdate.instructions ?? original.instructions;
+    original.img = recipeUpdate.img ?? original.img;
+    original.category = recipeUpdate.category ?? original.category;
+    bool edited = _repo.Update(original);
+    if (edited == false)
+    {
+      throw new Exception("Recipe was not edited");
+    }
+    return original;
+  }
+
+  internal string Remove(int recipeId, string userId)
+  {
+    Recipe original = Get(recipeId, userId);
+    if (original.creatorId != userId)
+    {
+      throw new Exception("Nacho recipe but for real tho that is not yours to delete");
+    }
+    _repo.Remove(recipeId);
+    return $"{original.title} has been eaten";
   }
 }
