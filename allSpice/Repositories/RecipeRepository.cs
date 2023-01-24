@@ -40,6 +40,15 @@ public class RecipeRepository
     }).ToList();
     return recipes;
   }
+  internal List<Recipe> GetSearch(string search)
+  {
+    string sql = @"
+    SELECT * FROM recipes
+    WHERE title LIKE @search OR instructions LIKE @search;
+    ";
+    List<Recipe> recipes = _db.Query<Recipe>(sql, new { search }).ToList();
+    return recipes;
+  }
 
   internal Recipe Get(int id)
   {

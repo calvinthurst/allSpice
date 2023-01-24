@@ -62,6 +62,20 @@ public class RecipeController : ControllerBase
       return BadRequest(e.Message);
     }
   }
+  [HttpGet("results/{search}")]
+  public async Task<ActionResult<List<Recipe>>> Get(string search)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      List<Recipe> recipe = _recipeService.GetSearch(search);
+      return Ok(recipe);
+    }
+    catch (Exception e)
+    {
+      return BadRequest(e.Message);
+    }
+  }
 
   [HttpGet("{id}/ingredients")]
   public async Task<ActionResult<List<Ingredient>>> GetIngredients(int id)

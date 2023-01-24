@@ -21,6 +21,13 @@ public class RecipeService
     // List<Recipe> filtered = recipes.FindAll(r=> r.)
     return recipes;
   }
+  internal List<Recipe> GetSearch(string search)
+  {
+    string newSearch = "%" + search + "%";
+    List<Recipe> recipes = _repo.GetSearch(newSearch);
+    // List<Recipe> filtered = recipes.FindAll(r=> r.)
+    return recipes;
+  }
 
   internal Recipe Get(int id, string userInfo)
   {
